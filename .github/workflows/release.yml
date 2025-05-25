@@ -7,66 +7,38 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-          - os: ubuntu-latest
-            package_generator: DEB
-            package_extension: deb
-            boost_package: libboost-test-dev
-          - os: windows-latest
-            package_generator: ZIP
-            package_extension: zip
-            boost_package: ""
-    
-    runs-on: ${{ matrix.os }}
-    
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
          
-      - name: Install dependencies (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install ${{ matrix.boost_package }} -y
-      
-      - name: Install dependencies (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          # Install vcpkg boost
-          vcpkg install boost-test:x64-windows
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install libboost-test-dev -y
        
-      - name: Configure CMake (Linux)
-        if: runner.os == 'Linux'
-        run: cmake . -DPATCH_VERSION=${{ github.run_number }} -DCPACK_GENERATOR=${{ matrix.package_generator }}
-        working-directory: ./01
-        
       - name: Configure CMake
         run: cmake . -DPATCH_VERSION=${{ github.run_number }}
         working-directory: ./01
-
+       
       - name: Build
         run: cmake --build .
         working-directory: ./01
-
+       
       - name: Test
         run: cmake --build . --target test
         working-directory: ./01
-
+       
       - name: Package
         run: cmake --build . --target package
         working-directory: ./01
-        
+       
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ github.run_number }}
           name: Release ${{ github.run_number }}
-          files: |
-            packages-ubuntu-latest/*
-            packages-windows-latest/*
+          files: ./01/helloworld-0.0.${{ github.run_number }}-Linux.deb
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
