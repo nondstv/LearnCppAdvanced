@@ -59,7 +59,16 @@ endif()
 
 install(TARGETS helloworld_cli RUNTIME DESTINATION bin)
 
-set(CPACK_GENERATOR DEB)
+# Set default package generator if not specified
+if(NOT CPACK_GENERATOR)
+    if(WIN32)
+        set(CPACK_GENERATOR "ZIP")
+    elseif(UNIX AND NOT APPLE)
+        set(CPACK_GENERATOR "DEB")
+    else()
+        set(CPACK_GENERATOR "TGZ")
+    endif()
+endif()
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
