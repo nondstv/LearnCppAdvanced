@@ -18,15 +18,19 @@ jobs:
         
       - name: Configure CMake
         run: cmake . -DPATCH_VERSION=${{ github.run_number }}
-        
+        working-directory: ./01
+
       - name: Build
         run: cmake --build .
-        
+        working-directory: ./01
+
       - name: Test
         run: cmake --build . --target test
-        
+        working-directory: ./01
+
       - name: Package
         run: cmake --build . --target package
+        working-directory: ./01
         
       - name: Create Release
         uses: softprops/action-gh-release@v1
