@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(02.cpp)
-
 add_executable(homeTask Home_task.cpp)
 
 
