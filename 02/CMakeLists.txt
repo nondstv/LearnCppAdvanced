@@ -1,32 +1,62 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
-add_executable(homeTask Home_task.cpp)
+set(PATCH_VERSION "1" CACHE INTERNAL "Patch version")
+set(PROJECT_VERSION 0.0.${PATCH_VERSION})  # Fixed typo: VESRION -> VERSION
+project(hometask_02 VERSION ${PROJECT_VERSION})
+
+
+
+add_executable(HomeTask Home_task.cpp)
+
+set_target_properties(HomeTask hometask_02 test_version PROPERTIES
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED ON
+)
+
+target_include_directories(helloworld
+    PRIVATE "${CMAKE_BINARY_DIR}"
+)
 
 
 if (MSVC)
-    target_compile_options(auto PRIVATE
+    target_compile_options(helloworld_cli PRIVATE
         /W4
     )
-    target_compile_options(decltype PRIVATE
+    target_compile_options(helloworld PRIVATE
         /W4
     )
-    target_compile_options(lambda PRIVATE
-        /W4
-    )
-    target_compile_options(tuple PRIVATE
+    target_compile_options(test_version PRIVATE
         /W4
     )
 else ()
-    target_compile_options(auto PRIVATE
+    target_compile_options(helloworld_cli PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
-    target_compile_options(decltype PRIVATE
+    target_compile_options(helloworld PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
-    target_compile_options(lambda PRIVATE
-        -Wall -Wextra -pedantic -Werror
-    )
-    target_compile_options(tuple PRIVATE
+    target_compile_options(test_version PRIVATE
         -Wall -Wextra -pedantic -Werror
     )
 endif()
+
+install(TARGETS helloworld_cli RUNTIME DESTINATION bin)
+
+# Set default package generator if not specified
+if(NOT CPACK_GENERATOR)
+    if(WIN32)
+        set(CPACK_GENERATOR "ZIP")
+    elseif(UNIX AND NOT APPLE)
+        set(CPACK_GENERATOR "DEB")
+    else()
+        set(CPACK_GENERATOR "TGZ")
+    endif()
+endif()
+set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_CONTACT example@example.com)
+include(CPack)
+
+enable_testing()
+add_test(test_version test_version)
