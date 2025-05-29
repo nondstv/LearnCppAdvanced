@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "lib.h"
+
 struct DataRecord {
     std::string field1;
     std::string field2;
