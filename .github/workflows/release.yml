@@ -37,7 +37,7 @@ jobs:
         with:
           tag_name: v${{ github.run_number }}
           name: Release ${{ github.run_number }}
-          files: ./02/homeTask02-0.0.${{ github.run_number }}-Linux.deb
+          files: ./homeTask02-0.0.${{ github.run_number }}-Linux.deb
           draft: false
           prerelease: false
         env:
