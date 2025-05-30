@@ -91,9 +91,47 @@ for (size_t i = 0; i < record_IPs.size(); ++i) {
               << record_IPs[i].field3 << std::endl;
     
             }
-    return 0;
+
+std::cout << "\nRecords started with 1:\n";
+for(const auto& record :record_IPs){
+    if(record.field1.length() >=2 &&
+        record.field1[0] =='1' &&
+        record.field1[1] == '.')
+        {
+            std::cout<<record.field1<< " ("<<record.field2 <<")\n";
+        }
+    }
+
+
+
+std::cout << "\nRecords started with 46.70:\n";
+for (const auto& record : record_IPs)
+{
+    if(record.field1.length() >=6 &&
+    record.field1.substr(0,6) == "46.70." )
+    {
+        std::cout<<record.field1<< " ("<<record.field2 <<")\n";
+    }
 }
 
+std::cout << "\nRecords has 46:\n";
+for (const auto& record : record_IPs)
+{
+    std::vector<int> parts = parseVersionString(record.field1);
+    bool contains46 = false;
+    for (int part : parts){
+        if(part ==46){
+            contains46 = true;
+            break;
+        }
+    }
+    if(contains46){
+        std::cout<<record.field1<< " ("<<record.field2 <<")\n";
+    }
+}
+
+return 0;
+}
 /// test case
 /*
 1.2.1.1    server1    active
